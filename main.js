@@ -1,3 +1,4 @@
+// Circle class.
 function Circle(position, radius) {
 	this.position = position;
 	this.radius = radius;
@@ -11,6 +12,7 @@ Circle.prototype.draw = function(ctx) {
 	ctx.stroke();
 }
 
+// Line class
 function Line(p1, p2) {
 	this.p1 = p1;
 	this.p2 = p2;
@@ -24,6 +26,7 @@ Line.prototype.draw = function (ctx) {
 	ctx.stroke();
 }
 
+// Main script.
 var canvas = document.getElementById("canvas");
 var ctx = canvas.getContext("2d");
 ctx.lineWidth = 4;
