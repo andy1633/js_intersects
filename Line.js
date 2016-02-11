@@ -13,6 +13,11 @@ Line.prototype.draw = function (ctx) {
   ctx.stroke();
 }
 
+Line.prototype.lengthSq - function () {
+  var delta = p2.clone().sub(p1);
+  return delta.lengthSq();
+}
+
 Line.prototype.collidingCircle = function(circle) {
   return Collisions.circleIntersectsLine(circle, this);
 }

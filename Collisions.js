@@ -1,21 +1,26 @@
 "use strict";
 // Module for detection between different shapes.
-var Collisions = (function () {
-  var circleIntersectsCircle = function (c1, c2) {
-    var dSq = c1.position.clone().sub(c2.position).lengthSq();
+var Collisions = {
+  circleIntersectsCircle: function (c1, c2) {
+    var delta = c1.position.clone().sub(c2.position);
+    var dSq = delta.lengthSq();
     var sumR = c1.radius + c2.radius;
-    return dSq < (sumR * sumR);
-  }
+    if (dSq < (sumR * sumR)) {
+      return c1.position.clone().add(delta.multiplyScalar(0.5));
+    } else {
+      return false;
+    }
+  },
 
-  var circleIntersectsLine = function (circle, line) {
+  circleIntersectsLine: function (circle, line) {
     // http://stackoverflow.com/questions/1073336/circle-line-segment-collision-detection-algorithm
     var e = line.p1.clone();
     var l = line.p2.clone();
     var c = circle.position.clone();
     var r = circle.radius;
 
-    var d = l.subtract(e);
-    var f = e.subtract(c);
+    var d = l.clone().subtract(e);
+    var f = e.clone().subtract(c);
 
     var a = d.dot(d);
     var b = 2 * f.dot(d);
@@ -27,21 +32,25 @@ var Collisions = (function () {
       // No intersection.
       return false;
     } else {
+      // Some kind of intersection happened.
       discriminant = Math.sqrt(discriminant);
 
       var t1 = (-b - discriminant)/(2*a);
       var t2 = (-b + discriminant)/(2*a);
 
+      // Impale or poke intersection.
       if(t1 >= 0 && t1 <= 1) {
-        return true;
+        return e.add(d.multiplyScalar(t1));
       }
+      // Exit wound intersections.
       if(t2 >= 0 && t2 <= 1) {
-        return true;
+        return e.add(d.multiplyScalar(t2));
       }
     }
-  }
+    return false;
+  },
 
-  var lineIntersectsLine = function(l1, l2) {
+  lineIntersectsLine: function(l1, l2) {
     // http://stackoverflow.com/questions/563198/how-do-you-detect-where-two-line-segments-intersect
     var p = l1.p1.clone();
     var q = l2.p1.clone();
@@ -51,13 +60,10 @@ var Collisions = (function () {
     var t = q.clone().subtract(p).cross(s) / r.cross(s);
     var u = q.clone().subtract(p).cross(r) / r.cross(s);
 
-    return (r.cross(s) != 0 && t >= 0 && t <= 1 &&
-        u >= 0 && u <= 1);
+    if (r.cross(s) != 0 && t >= 0 && t <= 1 && u >= 0 && u <= 1) {
+      return p.add(r.multiplyScalar(t));
+    } else {
+      return false;
+    }
   }
-
-  return {
-    circleIntersectsCircle: circleIntersectsCircle,
-    circleIntersectsLine: circleIntersectsLine,
-    lineIntersectsLine: lineIntersectsLine
-  }
-})();
+};
