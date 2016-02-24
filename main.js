@@ -4,12 +4,27 @@ var canvas = document.getElementById("canvas");
 var ctx = canvas.getContext("2d");
 var cW = canvas.width;
 var cH = canvas.height;
-ctx.lineWidth = 4;
-const N_LINES = 8;
-const N_CIRCLES = 8;
+
+const N_LINES = 24;
+const N_CIRCLES = 48;
+
+function resize () {
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+
+  cW = canvas.width;
+  cH = canvas.height;
+
+  ctx.lineWidth = 14;
+  ctx.strokeStyle = "#fff";
+}
+window.onresize = resize;
+resize();
 
 var line = new Line(new Victor(20.0, 20.0),
                     new Victor(300.0, 300.0));
+line.color = "#fff";
+
 var lines = [];
 for(var i = 0; i < N_LINES; i++) {
   lines.push(new Line(new Victor(Math.random()*cW, Math.random()*cH),
@@ -33,13 +48,13 @@ canvas.addEventListener("mousemove", function(e) {
   var collisions = [];
 
   for(var i = 0; i < lines.length; i++) {
-    lines[i].color = "#000";
+    lines[i].color = "#fff";
     var collision = line.collidingLine(lines[i]);
     if (collision) collisions.push({ p: collision, o: lines[i] });
   }
 
   for (var i = 0; i < circles.length; i++) {
-    circles[i].color = "#000";
+    circles[i].color = "#fff";
     var collision = circles[i].collidingLine(line)
     if (collision) collisions.push({ p: collision, o: circles[i]} );
 
